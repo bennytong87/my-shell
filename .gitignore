@@ -1,0 +1,19 @@
+# 執行檔
+mysh
+
+# 目的檔
+*.o
+*.obj
+
+# 編輯器設定
+.vscode/
+.idea/
+*.swp
+
+# 日誌
+*.log
+
+# 測試產物
+test1.txt
+test2.txt
+ls_output.txt
