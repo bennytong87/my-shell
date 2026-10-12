@@ -1,16 +1,19 @@
 /*
- * mysh.c - A Simple UNIX Shell implemented in C
+ * mysh.c - A UNIX Shell implemented in C
  *
  * Features:
- *   - External command execution (fork + execvp + wait)
+ *   - External command execution (fork + execvp + waitpid)
  *   - Built-in commands: cd, exit
  *   - I/O redirection: <, >
  *   - Single pipe: |
  *   - Background execution: &
  *   - SIGCHLD handler for automatic zombie reaping
  *
- * Author: [Benny Tong]
- * Date: 2026-10
+ * Usage: ./mysh
+ *
+ * Build:
+ *   make
+ *   or: gcc -Wall -Wextra -g -o mysh mysh.c
  */
 
 #include <stdio.h>

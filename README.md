@@ -1,37 +1,37 @@
-# mysh - A Simple UNIX Shell in C
+# mysh - A UNIX Shell in C
 
-用 C 語言從零實作的 UNIX Shell，支援執行外部命令、內建命令、I/O 重定向、管道、背景執行，並用 SIGCHLD handler 自動回收殭屍程序。
+A UNIX Shell implemented from scratch in C, supporting external command execution, built-in commands, I/O redirection, pipes, background execution, and automatic zombie reaping via SIGCHLD handler.
 
-## 功能
+## Features
 
-- 執行外部命令（ls、cat、echo 等）
-- 內建命令：`cd`、`exit`
-- I/O 重定向：`<`、`>`
-- 單一管道：`|`
-- 背景執行：`&`
-- SIGCHLD handler 自動回收殭屍程序
+- External command execution (ls, cat, echo, etc.)
+- Built-in commands: `cd`, `exit`
+- I/O redirection: `<`, `>`
+- Single pipe: `|`
+- Background execution: `&`
+- SIGCHLD handler for automatic zombie reaping
 
-## 編譯
+## Build
 
-```bash
+```
 make
 ```
 
-或直接使用 gcc：
+Or compile directly with gcc:
 
-```bash
+```
 gcc -Wall -Wextra -g -o mysh mysh.c
 ```
 
-## 執行
+## Run
 
-```bash
+```
 ./mysh
 ```
 
-## 使用範例
+## Usage Examples
 
-```bash
+```
 mysh> ls -l
 mysh> echo hello world
 mysh> echo hello > output.txt
@@ -44,49 +44,51 @@ mysh> pwd
 mysh> exit
 ```
 
-## 架構
+## Architecture
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                     main loop                        │
-│  1. 顯示提示符號 mysh>                               │
-│  2. 讀取輸入 (fgets)                                 │
-│  3. 移除換行 (strcspn)                               │
-│  4. 切割 token (strtok)                              │
-│  5. 檢查內建命令 (cd, exit)                          │
-│  6. 檢查背景執行 (&)                                 │
-│  7. 檢查管道 (|)                                     │
-│  8. 分派：                                           │
-│     - 有管道 → execute_pipe()                        │
-│     - 無管道 → parse_redirect() + execute_command()  │
-│  9. 回到步驟 1                                       │
-└─────────────────────────────────────────────────────┘
++-----------------------------------------------------+
+|                     main loop                        |
+|  1. Print prompt "mysh> "                            |
+|  2. Read input (fgets)                               |
+|  3. Strip newline (strcspn)                          |
+|  4. Tokenize input (strtok)                          |
+|  5. Handle built-in commands (cd, exit)              |
+|  6. Check for background execution (&)               |
+|  7. Check for pipe (|)                               |
+|  8. Dispatch:                                        |
+|     - pipe present -> execute_pipe()                 |
+|     - no pipe      -> parse_redirect() + execute_command() |
+|  9. Loop back to step 1                              |
++-----------------------------------------------------+
 ```
 
-## 系統呼叫
+## System Calls Used
 
-| 系統呼叫 | 用途 |
-|----------|------|
-| `fork()` | 複製 process |
-| `execvp()` | 執行外部程式 |
-| `waitpid()` | 等待 child 結束 |
-| `pipe()` | 建立管道 |
-| `dup2()` | 重定向檔案描述子 |
-| `open()` | 開啟檔案 |
-| `close()` | 關閉檔案描述子 |
-| `chdir()` | 改變工作目錄 |
-| `sigaction()` | 註冊 SIGCHLD handler |
+| System Call | Purpose |
+|-------------|---------|
+| `fork()` | Duplicate a process |
+| `execvp()` | Execute an external program |
+| `waitpid()` | Wait for a child process |
+| `pipe()` | Create a unidirectional pipe |
+| `dup2()` | Duplicate a file descriptor |
+| `open()` | Open a file |
+| `close()` | Close a file descriptor |
+| `chdir()` | Change working directory |
+| `sigaction()` | Register SIGCHLD handler |
 
-## 技術
+## Technical Stack
 
-C 語言、Linux 系統程式設計、fork、exec、wait、pipe、dup2、open、close、signal、sigaction、SIGCHLD、檔案描述子
+C, Linux system programming, fork, exec, wait, pipe, dup2, open, close, signal, sigaction, SIGCHLD, file descriptors
 
-## 除錯工具
+## Debugging Tools
 
-- `gdb`：追蹤 fork、exec、pipe
-- `strace`：觀察系統呼叫
-- `valgrind`：檢查記憶體泄漏
+- `gdb`: trace fork, exec, pipe
+- `strace`: inspect system calls
+- `valgrind`: check for memory leaks
 
-## 作者
+## Notes
 
-Benny Tong
+- Single pipe supported (multi-pipe not implemented)
+- Quotes and environment variable expansion not supported
+- Uses fixed-size arrays (no dynamic memory allocation)
