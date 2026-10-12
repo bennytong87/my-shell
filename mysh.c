@@ -9,11 +9,11 @@
  *   - Background execution: &
  *   - SIGCHLD handler for automatic zombie reaping
  *
- * Usage: ./mysh
- *
  * Build:
  *   make
  *   or: gcc -Wall -Wextra -g -o mysh mysh.c
+ *
+ * Usage: ./mysh
  */
 
 #include <stdio.h>
@@ -27,8 +27,10 @@
 
 #define MAX_ARGS 64
 
+/* ===== Signal Handler ===== */
+
 /*
- * SIGCHLD handler: reap all terminated child processes.
+ * sigchld_handler - Reap all terminated child processes.
  *
  * Uses WNOHANG to avoid blocking when no child has exited.
  * Loops because multiple children may exit between signal deliveries.
@@ -42,6 +44,8 @@ void sigchld_handler(int sig) {
     }
     errno = saved_errno;
 }
+
+/* ===== Command Execution ===== */
 
 /*
  * execute_command - Execute a single command with optional redirection.
@@ -165,6 +169,8 @@ int execute_pipe(char **args1, char **args2, int background) {
     return 0;
 }
 
+/* ===== Parser ===== */
+
 /*
  * parse_redirect - Extract < and > redirection from args.
  *
@@ -195,6 +201,8 @@ int parse_redirect(char **args, int argc, char **input_file, char **output_file)
     args[new_argc] = NULL;
     return new_argc;
 }
+
+/* ===== Main Loop ===== */
 
 int main() {
     char line[1024];
